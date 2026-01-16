@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الفصل الإلكتروني لخط الرقعة | الأستاذ نظام الدين</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* =========================================
+           1. TEMA "MODERN ISLAMIC ART" (ARABIC VERSION)
+           ========================================= */
+        :root {
+            --bg-gradient: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            --sidebar-bg: rgba(255, 255, 255, 0.95);
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --primary: #0F4C75;   
+            --accent: #BBE1FA;    
+            --gold: #D4AF37;      
+            --text-dark: #1B262C; 
+            --white: #ffffff;
+            --radius: 20px;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--bg-gradient);
+            font-family: 'Amiri', 'Poppins', serif; /* Prioritize Arabic font */
+            color: var(--text-dark);
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+            text-align: right; /* Default text alignment for Arabic */
+        }
+
+        /* Corak Geometri Latar Belakang */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0; right: 0; width: 100%; height: 100%;
+            background-image: radial-gradient(var(--gold) 1px, transparent 1px);
+            background-size: 40px 40px;
+            opacity: 0.1;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* =========================================
+           2. INTRO SCREEN (SPLASH)
+           ========================================= */
+        #intro-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #0f2027;
+            z-index: 9999;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            transition: transform 0.8s cubic-bezier(0.86, 0, 0.07, 1);
+        }
+
+        .title-box {
+            border: 2px solid var(--gold);
+            padding: 40px;
+            text-align: center;
+            position: relative;
+        }
+
+        .title-box::after {
+            content: "♦"; position: absolute; top: -15px; left: 50%; transform: translateX(-50%); 
+            background: #0f2027; color: var(--gold); font-size: 20px; padding: 0 10px;
+        }
+
+        .bounce-title {
+            font-size: 4rem; color: var(--gold);
+            margin-bottom: 10px; letter-spacing: 0;
+            line-height: 1.4;
+        }
+
+        .start-btn {
+            margin-top: 30px; padding: 15px 50px;
+            background: transparent; color: var(--gold);
+            border: 2px solid var(--gold);
+            font-size: 1.5rem; font-weight: 600; font-family: 'Amiri';
+            cursor: pointer; transition: 0.4s;
+        }
+        .start-btn:hover { background: var(--gold); color: #000; box-shadow: 0 0 20px var(--gold); }
+
+        /* =========================================
+           3. UI UTAMA (DASHBOARD LAYOUT)
+           ========================================= */
+        .main-container {
+            display: flex; width: 95%; height: 92vh;
+            margin: 4vh auto;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            overflow: hidden;
+            opacity: 0; transition: opacity 1s;
+        }
+
+        /* Sidebar Navigation (RTL Friendly) */
+        .sidebar {
+            width: 280px; background: var(--sidebar-bg);
+            padding: 40px 20px; display: flex; flex-direction: column;
+            border-left: 1px solid rgba(0,0,0,0.05); /* Border on left for RTL */
+        }
+
+        .profile-area { text-align: center; margin-bottom: 40px; }
+        .avatar { 
+            width: 90px; height: 90px; border-radius: 50%; 
+            border: 3px solid var(--gold); padding: 3px; 
+            object-fit: cover;
+        }
+        .profile-area h3 { color: var(--primary); margin-top: 15px; font-weight: 700; font-size: 1.3rem; }
+        .badge { background: var(--primary); color: white; padding: 2px 10px; border-radius: 10px; font-size: 0.8rem; }
+
+        .nav-btn {
+            background: transparent; border: none;
+            padding: 15px 20px; width: 100%; text-align: right; /* RTL align */
+            font-family: 'Amiri'; font-size: 1.1rem; color: #555;
+            cursor: pointer; border-radius: 12px; margin-bottom: 8px;
+            transition: 0.3s; display: flex; align-items: center; gap: 12px; font-weight: 700;
+        }
+        .nav-btn:hover { background: #f0f4f8; color: var(--primary); transform: translateX(-5px); } /* Move left in RTL */
+        .nav-btn.active { background: var(--primary); color: white; box-shadow: 0 4px 10px rgba(15, 76, 117, 0.3); }
+
+        /* Content Area */
+        .content-area { flex: 1; padding: 40px; overflow-y: auto; position: relative; }
+        .content-area::-webkit-scrollbar { width: 6px; }
+        .content-area::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 10px; }
+
+        .panel { display: none; animation: slideUp 0.6s ease; }
+        .panel.active { display: block; }
+
+        .section-header { 
+            font-size: 2.8rem; color: var(--white); margin-bottom: 25px; 
+            font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            font-family: 'Amiri';
+        }
+        
+        /* =========================================
+           4. KAD & ELEMEN INTERAKTIF
+           ========================================= */
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 25px; }
+        
+        .glass-card {
+            background: var(--card-bg); 
+            border-radius: 15px; padding: 25px; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: 0.4s; position: relative; overflow: hidden;
+            border-top: 4px solid var(--gold);
+        }
+        .glass-card:hover { transform: translateY(-8px); box-shadow: 0 15px 30px rgba(0,0,0,0.2); }
+        
+        .glass-card h3 { color: var(--primary); margin-bottom: 10px; font-weight: 700; font-size: 1.4rem; }
+        .glass-card p, .glass-card li { font-size: 1.1rem; line-height: 1.8; color: #555; font-family: 'Amiri'; }
+
+        /* Input & Buttons */
+        .input-box {
+            width: 100%; padding: 12px; border: 1px solid #ddd;
+            border-radius: 8px; font-family: 'Amiri', serif; font-size: 1.3rem;
+            margin-top: 15px; outline: none; transition: 0.3s; background: rgba(255,255,255,0.9);
+        }
+        .input-box:focus { border-color: var(--gold); box-shadow: 0 0 5px rgba(212, 175, 55, 0.5); }
+
+        .action-btn {
+            background: linear-gradient(45deg, var(--gold), #f3c623); 
+            color: #1a1a1a; border: none;
+            padding: 10px 40px; border-radius: 50px; font-weight: 700;
+            cursor: pointer; margin-top: 15px; font-family: 'Amiri'; font-size: 1.1rem;
+            display: inline-block; text-decoration: none; box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
+            transition: 0.3s;
+        }
+        .action-btn:hover { transform: scale(1.05); box-shadow: 0 8px 20px rgba(212, 175, 55, 0.6); }
+
+        .audio-btn {
+            background: var(--primary); color: white;
+            border: none; width: 45px; height: 45px; border-radius: 50%;
+            cursor: pointer; font-size: 1.2rem; margin-top: 10px;
+            transition: 0.3s; display: inline-flex; justify-content: center; align-items: center;
+            box-shadow: 0 4px 10px rgba(15, 76, 117, 0.4);
+        }
+        .audio-btn:hover { background: var(--gold); color: #000; transform: rotate(-15deg); }
+
+        /* Quote Box */
+        .quote-box {
+            background: rgba(255,255,255,0.9); padding: 30px; border-radius: 15px;
+            border: 1px solid var(--gold); text-align: center;
+            position: relative;
+        }
+        .quote-box::before { content: "❝"; font-size: 3rem; color: var(--gold); position: absolute; top: -10px; right: 20px; opacity: 0.5; } /* Quote on right for RTL */
+
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        
+        #canvas-bg { position: fixed; top: 0; right: 0; z-index: -2; }
+
+    </style>
+</head>
+<body>
+
+    <div id="intro-overlay">
+        <div class="title-box">
+            <h1 class="bounce-title">فن الخط</h1>
+            <p style="color:var(--accent); font-size: 1.4rem; margin-bottom: 20px; font-family: 'Amiri';">درس فن خط الرقعة</p>
+            <p style="color:#aaa; font-size: 1rem; font-family: 'Amiri';">الموضوع: أحب الله والرسول</p>
+            <button class="start-btn" onclick="startClass()">دخول الفصل</button>
+        </div>
+    </div>
+
+    <canvas id="canvas-bg"></canvas>
+
+    <div class="main-container" id="main-ui">
+        
+        <aside class="sidebar">
+            <div class="profile-area">
+                <img src="https://api.dicebear.com/7.x/micah/svg?seed=UstazNizam&backgroundColor=b6e3f4" class="avatar" alt="Avatar">
+                <h3>الأستاذ نظام الدين</h3>
+                <span class="badge">معلم متميز</span>
+                [cite_start][cite: 7]
+            </div>
+            
+            <nav>
+                <button onclick="showPanel('dashboard')" class="nav-btn active" id="btn-dashboard">
+                    <span>🏠</span> الرئيسية
+                </button>
+                <button onclick="showPanel('induksi')" class="nav-btn" id="btn-induksi">
+                    <span>🖼️</span> التمهيد
+                </button>
+                <button onclick="showPanel('aktiviti1')" class="nav-btn" id="btn-aktiviti1">
+                    <span>✍️</span> الخطوة ١: الحروف
+                </button>
+                <button onclick="showPanel('aktiviti2')" class="nav-btn" id="btn-aktiviti2">
+                    <span>🔊</span> الخطوة ٢: الكلمات
+                </button>
+                <button onclick="showPanel('aktiviti3')" class="nav-btn" id="btn-aktiviti3">
+                    <span>🚶</span> الخطوة ٣: المعرض
+                </button>
+                <button onclick="showPanel('penutup')" class="nav-btn" id="btn-penutup">
+                    <span>🤲</span> الخاتمة
+                </button>
+            </nav>
+        </aside>
+
+        <main class="content-area">
+
+            <section id="dashboard" class="panel active">
+                <h1 class="section-header">لوحة المعلومات</h1>
+                <div class="card-grid">
+                    <div class="glass-card" style="border-top-color: var(--primary);">
+                        <h3>📅 معلومات الدرس</h3>
+                        <ul style="list-style:none; padding:0;">
+                            <li><strong>اليوم:</strong> الثلاثاء</li>
+                            <li><strong>التاريخ:</strong> ١٠ يناير ٢٠٢٦</li>
+                            <li><strong>الوقت:</strong> ٩:٠٠ - ١٠:٠٠ صباحًا</li>
+                            [cite_start]<li><strong>عدد الطلبة:</strong> ٢٥ طالبًا (١٥ طالبة و ١٠ طلاب) [cite: 9]</li>
+                        </ul>
+                    </div>
+                    <div class="glass-card">
+                        <h3>🎯 أهداف التعلم</h3>
+                        <p>في آخر الدرس، يستطيع الطلبة أن:</p>
+                        <ul style="margin-right: 20px; margin-top:5px; font-size:1rem;">
+                            [cite_start]<li>ينسخوا <strong>١٠ حروف هجائية</strong> بخط الرقعة نسخًا صحيحًا[cite: 10].</li>
+                            [cite_start]<li>يكتبوا <strong>٥ كلمات مختارة</strong> باستخدام "وورد وول"[cite: 10].</li>
+                            [cite_start]<li>ينتجوا <strong>جملة واحدة</strong> من الحكم (جولة المعرض)[cite: 10].</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="induksi" class="panel">
+                <h1 class="section-header">التمهيد: الملاحظة</h1>
+                <p style="color:#eee; margin-bottom:20px;">قارن بين الكتابتين في الصور أدناه.</p>
+                
+                <div class="card-grid">
+                    <div class="glass-card">
+                        <div style="background:#f0f0f0; padding:20px; border-radius:10px; text-align:center;">
+                            <h2 style="font-size:2rem; color:#333; font-family:'Amiri';">بسم الله الرحمن الرحيم</h2>
+                        </div>
+                        <p style="text-align:center; margin-top:10px;"><strong>الصورة ١:</strong> كتابة عادية</p>
+                    </div>
+                    <div class="glass-card" style="border-top-color: var(--gold);">
+                        <div style="background:#fff; padding:20px; border-radius:10px; text-align:center; border:2px solid var(--gold);">
+                            <h2 style="font-size:2.5rem; color:#000; font-weight:bold; font-family:'Amiri';">بسم الله الرحمن الرحيم</h2>
+                        </div>
+                        <p style="text-align:center; margin-top:10px;"><strong>الصورة ٢:</strong> خط الرقعة</p>
+                    </div>
+                </div>
+                
+                <div class="glass-card" style="margin-top:20px;">
+                    <h3>💡 سؤال المعلم:</h3>
+                    <p>"ما الفرق بين الصورتين؟ وأي الكتابتين أجمل؟"</p>
+                    <hr style="margin:10px 0; border:0; border-top:1px solid #ddd;">
+                    [cite_start]<p><strong>جواب الطلبة:</strong> الصورة الثانية أجمل لأنها مكتوبة بقواعد خط الرقعة الفني. [cite: 11]</p>
+                </div>
+            </section>
+
+            <section id="aktiviti1" class="panel">
+                <h1 class="section-header">الخطوة ١: أساسيات الحروف</h1>
+                
+                <div class="card-grid">
+                    <div class="glass-card">
+                        <h3>🎥 فيديو تعليمي</h3>
+                        <p>شاهد طريقة مسك القلم وكتابة الحروف.</p>
+                        <a href="https://drive.google.com/file/d/1qa4gUsD98xg6NVDPbo7JWZl9lHn5rt7G/view?usp=drivesdk" target="_blank" class="action-btn">شاهد الفيديو</a>
+                        [cite_start][cite: 11]
+                    </div>
+                    <div class="glass-card">
+                        <h3>🛠️ الأدوات</h3>
+                        <p>تأكد من استخدام:</p>
+                        <ul style="margin-right:20px;">
+                            <li>قلم الخط (2B)</li>
+                            <li>ورقة مسطرة</li>
+                            <li>زاوية ٤٥ درجة</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="glass-card" style="margin-top:25px;">
+                    <h3>تدريب النسخ (الشرائح الرقمية)</h3>
+                    <p>انسخ الحروف المفردة التالية بخط الرقعة:</p>
+                    <div style="font-size:3.5rem; text-align:center; margin: 20px 0; color: var(--primary); font-family:'Amiri';">
+                        ا ب ج د ر س ص ط ع ف
+                    </div>
+                </div>
+            </section>
+
+            <section id="aktiviti2" class="panel">
+                <h1 class="section-header">الخطوة ٢: الاستماع والكتابة</h1>
+                <p style="color:#eee; margin-bottom:20px;">استمع إلى النطق (زر الصوت)، ثم اكتب الكلمة بخط الرقعة.</p>
+
+                <div class="card-grid">
+                    <div class="glass-card">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <h2 style="font-size:2.2rem; font-family:'Amiri';">عِلْم</h2>
+                            <button class="audio-btn" onclick="playAudio('عِلْم')">🔊</button>
+                        </div>
+                        <input type="text" class="input-box" placeholder="اكتب هنا...">
+                    </div>
+
+                    <div class="glass-card">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <h2 style="font-size:2.2rem; font-family:'Amiri';">قَلَم</h2>
+                            <button class="audio-btn" onclick="playAudio('قَلَم')">🔊</button>
+                        </div>
+                        <input type="text" class="input-box" placeholder="اكتب هنا...">
+                    </div>
+
+                    <div class="glass-card">
+                         <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <h2 style="font-size:2.2rem; font-family:'Amiri';">كِتَابَة</h2>
+                            <button class="audio-btn" onclick="playAudio('كِتَابَة')">🔊</button>
+                        </div>
+                        <input type="text" class="input-box" placeholder="اكتب هنا...">
+                    </div>
+                </div>
+                
+                <div style="text-align:center; margin-top:20px;">
+                    <button class="action-btn" onclick="alert('أحسنت! إجابة ممتازة (ممتاز)!')">✅ تحقق من الإجابة</button>
+                </div>
+            </section>
+
+            <section id="aktiviti3" class="panel">
+                <h1 class="section-header">الخطوة ٣: جولة المعرض</h1>
+                
+                <div class="quote-box">
+                    <h2 style="font-size:2.5rem; color:var(--text-dark); margin-bottom:10px; font-family:'Amiri';">
+                        مَنْ عَرَفَ نَفْسَهُ فَقَدْ عَرَفَ رَبَّهُ
+                    </h2>
+                </div>
+                [cite_start][cite: 11]
+
+                <div class="glass-card" style="margin-top:25px;">
+                    <h3>🚶‍♂️ تعليمات النشاط (Gallery Walk):</h3>
+                    <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:15px;">
+                        <div style="flex:1; min-width:200px; background: rgba(15, 76, 117, 0.1); padding:15px; border-radius:10px;">
+                            <strong>١. المجموعات:</strong><br>كتابة الحكمة بخط الرقعة.
+                        </div>
+                        <div style="flex:1; min-width:200px; background: rgba(15, 76, 117, 0.1); padding:15px; border-radius:10px;">
+                            <strong>٢. العرض:</strong><br>تعليق الأعمال على الحائط.
+                        </div>
+                        <div style="flex:1; min-width:200px; background: rgba(15, 76, 117, 0.1); padding:15px; border-radius:10px;">
+                            <strong>٣. التقييم:</strong><br>التجول وإعطاء ملاحظات إيجابية.
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="penutup" class="panel">
+                <h1 class="section-header">الخاتمة وتسبيح الكفارة</h1>
+                
+                <div class="card-grid">
+                    <div class="glass-card">
+                        <h3>📋 انعكاس الطلبة</h3>
+                        <p>ماذا تعلمنا اليوم؟</p>
+                        <ul style="padding-right:20px; color:var(--primary); font-weight:600;">
+                            <li>قواعد خط الرقعة</li>
+                            <li>الصبر والتركيز</li>
+                            <li>حب الفنون الإسلامية</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="glass-card" style="border-top-color:var(--primary);">
+                        <h3>🌟 القيم النبيلة</h3>
+                        <p>تطبيق القيم في الدرس:</p>
+                        <div style="display:flex; gap:10px; margin-top:10px;">
+                            <span class="badge" style="background:var(--gold); color:black;">الطاعة</span>
+                            <span class="badge" style="background:var(--gold); color:black;">الأدب</span>
+                            <span class="badge" style="background:var(--gold); color:black;">التعاون</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="text-align:center; margin-top:40px;">
+                    <h2 style="color:var(--white); font-size:2rem; text-shadow:0 2px 5px rgba(0,0,0,0.5); font-family:'Amiri';">
+                        سُبْحَانَكَ اللَّهُمَّ وَبِحَمْدِكَ
+                    </h2>
+                    <p style="color:#ddd; margin-bottom:20px;">شكرًا لكم جميعًا! السلام عليكم.</p>
+                    <button class="action-btn" onclick="location.reload()">إعادة الدرس 🔄</button>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        // --- ANIMASI PARTIKEL (Emas & Putih) ---
+        const canvas = document.getElementById('canvas-bg');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let particles = [];
+        const colors = ['#D4AF37', '#BBE1FA', '#FFFFFF', 'rgba(255,255,255,0.5)']; 
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 3 + 1;
+                this.color = colors[Math.floor(Math.random() * colors.length)];
+                this.speedX = Math.random() * 0.5 - 0.25;
+                this.speedY = Math.random() * 0.5 - 0.25;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+            }
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            for (let i = 0; i < 80; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+            }
+            requestAnimationFrame(animateParticles);
+        }
+
+        initParticles();
+        animateParticles();
+
+        // --- FUNGSI AUDIO (TTS - ARABIC) ---
+        function playAudio(text) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'ar-SA'; // Set Language to Arabic
+                utterance.rate = 0.8; 
+                window.speechSynthesis.speak(utterance);
+            } else {
+                alert("المتصفح لا يدعم الصوت.");
+            }
+        }
+
+        // --- FUNGSI NAVIGASI ---
+        function startClass() {
+            document.getElementById('intro-overlay').style.transform = 'translateY(-100%)';
+            setTimeout(() => {
+                document.getElementById('main-ui').style.opacity = '1';
+            }, 600);
+        }
+
+        function showPanel(id) {
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            
+            document.getElementById(id).classList.add('active');
+            document.getElementById('btn-' + id).classList.add('active');
+        }
+
+        // Responsive Canvas
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+</html>
